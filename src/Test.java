@@ -1,19 +1,12 @@
-import javax.swing.JOptionPane;
-
-
 public class Test
 {
 	public static void main(String[] args)
 	{
-		int x = 5;
-		
-		if (JOptionPane.showInputDialog(null, "teste").equals("a"))
-			return;
-		else{
-			int y = 2;
-			int j = x / y;
-			System.out.println(5 / 2);
-		}
-		
+		System.out.println(vectorAngle(-1, 0));
+	}
+
+	static double vectorAngle(double x, double y)
+	{
+		return Math.toDegrees(Math.atan2(y, x));
 	}
 }

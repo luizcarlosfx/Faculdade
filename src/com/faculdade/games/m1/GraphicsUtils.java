@@ -3,8 +3,11 @@ package com.faculdade.games.m1;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
+import java.awt.image.AffineTransformOp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +70,7 @@ public class GraphicsUtils
 		Point first = points.get(0);
 
 		path.moveTo(first.x, first.y);
-
+		
 		for (int i = 1; i < points.size(); i++)
 		{
 			Point point = points.get(i);

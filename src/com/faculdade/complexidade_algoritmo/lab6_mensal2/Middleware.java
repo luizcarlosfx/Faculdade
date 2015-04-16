@@ -56,7 +56,7 @@ public class Middleware extends UnicastRemoteObject implements IMiddleware
 			}
 			catch (Exception e)
 			{
-
+				e.printStackTrace();
 			}
 		}
 

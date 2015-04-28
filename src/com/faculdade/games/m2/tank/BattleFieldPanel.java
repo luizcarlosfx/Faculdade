@@ -1,33 +1,55 @@
 package com.faculdade.games.m2.tank;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.util.Set;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-
-import com.faculdade.games.m2.tank.base.GameObject;
 
 public class BattleFieldPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
-	
-	public GameObject tankObj;
+
+	private BufferedImage background;
 
 	public BattleFieldPanel()
 	{
 		setSize(200, 200);
 
-		Tank tank = new Tank();
-		
-		TankPlayer player = new TankPlayer(tank);
+		loadBackgroundImage();
 
-		tankObj = SceneController.instantiateNew(new Point(100, 100), 45);
+		Tank tank = new TankPlayer(Color.RED, new Vector2(100, 100));
 
-		tankObj.addComponent(tank);
-		
-		tankObj.addComponent(player);
+		Tank tank2 = new TankIA(Color.BLUE, new Vector2(450, 450));
+
+		Tank tank3 = new TankIA(Color.GREEN, new Vector2(450, 100));
+
+		Tank tank4 = new TankIA(Color.YELLOW, new Vector2(100, 450));
+
+		Tank tank5 = new TankIA(Color.PINK, new Vector2(300, 300));
+
+		Scene.registerObject(tank);
+		Scene.registerObject(tank2);
+		Scene.registerObject(tank3);
+		Scene.registerObject(tank4);
+		Scene.registerObject(tank5);
+	}
+
+	void loadBackgroundImage()
+	{
+		try
+		{
+			background = ImageIO.read(ClassLoader
+					.getSystemResource("com/faculdade/games/m2/tank/resources/background.jpg"));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -37,13 +59,17 @@ public class BattleFieldPanel extends JPanel
 
 		Graphics2D graphics = (Graphics2D) g;
 
-		Set<GameObject> objs = SceneController.getGameObjects();
-		
-//		System.out.println(objs.size());
+		List<GameObject> objs = Scene.getGameObjects();
 
-		for (GameObject gameObject : objs)
+		g.drawRect(0, 0, Scene.battleFieldBounds.width, Scene.battleFieldBounds.height);
+
+		graphics.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+
+		// System.out.println(objs.size());
+
+		for (int i = 0; i < objs.size(); i++)
 		{
-			gameObject.paint(graphics);
+			objs.get(i).paint(graphics);
 		}
 
 		repaint();

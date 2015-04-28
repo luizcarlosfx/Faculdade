@@ -25,9 +25,6 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class PaintWindow extends JFrame
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	JMenuBar menu = new JMenuBar();
@@ -46,7 +43,7 @@ public class PaintWindow extends JFrame
 
 	JPanel paletePanel;
 
-	JComboBox<PaintMode> modes = new JComboBox<PaintMode>(PaintMode.values());
+	JComboBox<PaintTool> modes = new JComboBox<PaintTool>(PaintTool.values());
 
 	JFileChooser fileChooser;
 
@@ -66,7 +63,7 @@ public class PaintWindow extends JFrame
 
 		setResizable(false);
 
-		paint.newImage(500, 500);
+		paint.newImage(1000, 500);
 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -103,7 +100,7 @@ public class PaintWindow extends JFrame
 
 	void changePaintMode(ActionEvent e)
 	{
-		paint.setMode((PaintMode) modes.getSelectedItem());
+		paint.setTool((PaintTool) modes.getSelectedItem());
 	}
 
 	void setBrushSizeSlider()

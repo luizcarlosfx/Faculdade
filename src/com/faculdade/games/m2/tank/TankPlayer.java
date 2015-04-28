@@ -1,25 +1,18 @@
 package com.faculdade.games.m2.tank;
 
-import com.faculdade.games.m2.tank.base.Component;
-import com.faculdade.games.m2.tank.base.Input;
-import com.faculdade.games.m2.tank.base.Tag;
-import com.faculdade.games.m2.tank.base.Input.Button;
+import java.awt.Color;
 
-public class TankPlayer extends Component
+public class TankPlayer extends Tank
 {
-	private Tank tank;
-
-	public TankPlayer(Tank tank)
+	public TankPlayer(Color color, Vector2 position)
 	{
-		super();
-		this.tank = tank;
+		super(color, position);
 	}
 
 	@Override
-	public void start()
+	public void awake()
 	{
-		gameObject.setTag(Tag.Player);
-		Input.addButtonDownListener(this::onButtonDown);
+		setTag("Player");
 	}
 
 	@Override
@@ -27,6 +20,8 @@ public class TankPlayer extends Component
 	{
 		double vertical = 0;
 		double horizontal = 0;
+		
+//		System.out.println("here we are");
 
 		if (Input.Up)
 		{
@@ -44,15 +39,19 @@ public class TankPlayer extends Component
 		{
 			horizontal += 1;
 		}
+		
+//		System.out.println("h=" + horizontal);
 
-		tank.move(vertical, horizontal);
-	}
-
-	void onButtonDown(Button button)
-	{
-		if (button == Button.Shoot)
+		move(vertical, horizontal);
+		
+		if(Input.Shoot)
 		{
-			tank.shoot();
+			cannonShoot();
+		}
+		
+		if(Input.Shoot2)
+		{
+			machineGunShoot();
 		}
 	}
 }

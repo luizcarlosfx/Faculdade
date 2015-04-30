@@ -2,11 +2,19 @@ package com.faculdade.games.m2.paint;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -16,14 +24,16 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.Box.Filler;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
-public class PaintWindow extends JFrame
+public class PaintWindow extends JFrame implements KeyListener
 {
 	private static final long serialVersionUID = 1L;
 
@@ -35,15 +45,15 @@ public class PaintWindow extends JFrame
 	JMenuItem openImage = new JMenuItem("Open...");
 	JMenuItem saveImage = new JMenuItem("Save as...");
 
-	JMenu editMenu = new JMenu("Edit");
-
 	JButton chooseColor = new JButton();
+
+	JButton chooseColor2 = new JButton();
 
 	PaintPanel paint;
 
 	JPanel paletePanel;
 
-	JComboBox<PaintTool> modes = new JComboBox<PaintTool>(PaintTool.values());
+	JComboBox<PaintTool> tools = new JComboBox<PaintTool>(PaintTool.values());
 
 	JFileChooser fileChooser;
 
@@ -57,17 +67,19 @@ public class PaintWindow extends JFrame
 
 		paint = new PaintPanel(this);
 
+		newImage(null);
+
 		add(paint, BorderLayout.CENTER);
 
 		setPaletePanel();
 
 		setResizable(false);
 
-		paint.newImage(1000, 500);
-
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		setVisible(true);
+
+		addKeyListener(this);
 	}
 
 	void setPaletePanel()
@@ -76,31 +88,33 @@ public class PaintWindow extends JFrame
 
 		paletePanel.setBackground(Color.LIGHT_GRAY);
 
-		paletePanel.setLayout(new GridLayout(1, 3, 10, 10));
+		paletePanel.setLayout(new GridLayout(1, 4, 10, 10));
 
 		setPaintModeComboBox();
 
-		setColorButton();
+		setColorButtons();
 
 		setBrushSizeSlider();
 
 		paletePanel.add(chooseColor);
+
+		paletePanel.add(chooseColor2);
 
 		add(paletePanel, BorderLayout.NORTH);
 	}
 
 	void setPaintModeComboBox()
 	{
-		modes.addActionListener(this::changePaintMode);
+		tools.addActionListener(this::changePaintMode);
 
-		paletePanel.add(modes);
+		paletePanel.add(tools);
 
 		changePaintMode(null);
 	}
 
 	void changePaintMode(ActionEvent e)
 	{
-		paint.setTool((PaintTool) modes.getSelectedItem());
+		paint.setTool((PaintTool) tools.getSelectedItem());
 	}
 
 	void setBrushSizeSlider()
@@ -119,22 +133,36 @@ public class PaintWindow extends JFrame
 		paint.setBrushRadius(slider.getValue());
 	}
 
-	void setColorButton()
+	void setColorButtons()
 	{
-		chooseColor.setSize(500, 500);
-
 		chooseColor.setBackground(paint.getColor());
 
 		chooseColor.addActionListener(this::chooseColor);
+
+		chooseColor2.setBackground(paint.getColor2());
+
+		chooseColor2.addActionListener(this::chooseColor);
 	}
 
 	void chooseColor(ActionEvent e)
 	{
-		Color color = JColorChooser.showDialog(this, "Choose brush color", paint.getColor());
+		JButton source = (JButton) e.getSource();
 
-		chooseColor.setBackground(color);
+		boolean color1 = source == chooseColor;
 
-		paint.setColor(color);
+		Color color = JColorChooser.showDialog(this, "Choose brush color",
+				color1 ? paint.getColor() : paint.getColor2());
+
+		source.setBackground(color);
+
+		if (color1)
+		{
+			paint.setColor(color);
+		}
+		else
+		{
+			paint.setColor2(color);
+		}
 	}
 
 	void setMenu()
@@ -175,6 +203,7 @@ public class PaintWindow extends JFrame
 			if (!path.getPath().endsWith(".jpg") && !path.getPath().endsWith(".png"))
 			{
 				String extension = ".jpg";
+
 				String newPath = path.getPath() + extension;
 
 				path = new File(newPath);
@@ -186,7 +215,7 @@ public class PaintWindow extends JFrame
 
 	void newImage(ActionEvent e)
 	{
-		paint.newImage(500, 400);
+		paint.newImage(1024, 650);
 	}
 
 	void openImage(ActionEvent e)
@@ -214,5 +243,39 @@ public class PaintWindow extends JFrame
 	{
 		UIManager.setLookAndFeel(new NimbusLookAndFeel());
 		new PaintWindow();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+		/*
+		 * System.out.println("key pressed"); if(e.getKeyCode() ==
+		 * KeyEvent.VK_B) { System.out.println("b caralho");
+		 * tools.setSelectedItem(PaintTool.Brush); } else if(e.getKeyCode() ==
+		 * KeyEvent.VK_E) { tools.setSelectedItem(PaintTool.Eraser); } else
+		 * if(e.getKeyCode() == KeyEvent.VK_F) {
+		 * tools.setSelectedItem(PaintTool.Fill); }
+		 */
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		System.out.println("key pressed");
+		/*
+		 * System.out.println("key pressed"); if(e.getKeyCode() ==
+		 * KeyEvent.VK_B) { System.out.println("b caralho");
+		 * tools.setSelectedItem(PaintTool.Brush); } else if(e.getKeyCode() ==
+		 * KeyEvent.VK_E) { tools.setSelectedItem(PaintTool.Eraser); } else
+		 * if(e.getKeyCode() == KeyEvent.VK_F) {
+		 * tools.setSelectedItem(PaintTool.Fill); }
+		 */
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		// TODO Auto-generated method stub
+
 	}
 }

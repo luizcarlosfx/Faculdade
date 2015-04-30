@@ -66,7 +66,7 @@ public class Rect
 		minY = maxY = y;
 	}
 
-	public void grow(Color[][] pixels, Color pixelColor)
+	public void grow(Color[][] pixels, boolean[][]visited, Color pixelColor)
 	{
 		boolean right, left, up, down;
 
@@ -75,18 +75,18 @@ public class Rect
 		while (right || left || up || down)
 		{
 			if (right)
-				right = grow(pixels, pixelColor, 1, 0);
+				right = grow(pixels, visited, pixelColor, 1, 0);
 			if (left)
-				left = grow(pixels, pixelColor, -1, 0);
+				left = grow(pixels, visited, pixelColor, -1, 0);
 			if (up)
-				up = grow(pixels, pixelColor, 0, 1);
+				up = grow(pixels, visited, pixelColor, 0, 1);
 			if (down)
-				down = grow(pixels, pixelColor, 0, -1);
+				down = grow(pixels, visited, pixelColor, 0, -1);
 		}
 
 	}
 
-	private boolean grow(Color[][] pixels, Color targetColor, int xDir, int yDir)
+	private boolean grow(Color[][] pixels, boolean[][] visited, Color targetColor, int xDir, int yDir)
 	{
 		boolean right = xDir == 1;
 		boolean left = xDir == -1;
@@ -99,7 +99,7 @@ public class Rect
 
 			for (int y = minY; y <= maxY; y++)
 			{
-				if (!PaintUtils.validPixel(pixels, targetColor, x, y))
+				if (!PaintUtils.validPixel(pixels, targetColor, x, y) || visited[x][y])
 				{
 					return false;
 				}
@@ -113,7 +113,7 @@ public class Rect
 
 			for (int y = minY; y <= maxY; y++)
 			{
-				if (!PaintUtils.validPixel(pixels, targetColor, x, y))
+				if (!PaintUtils.validPixel(pixels, targetColor, x, y) || visited[x][y])
 					return false;
 			}
 
@@ -125,7 +125,7 @@ public class Rect
 
 			for (int x = minX; x <= maxX; x++)
 			{
-				if (!PaintUtils.validPixel(pixels, targetColor, x, y))
+				if (!PaintUtils.validPixel(pixels, targetColor, x, y) || visited[x][y])
 					return false;
 			}
 
@@ -137,7 +137,7 @@ public class Rect
 
 			for (int x = minX; x <= maxX; x++)
 			{
-				if (!PaintUtils.validPixel(pixels, targetColor, x, y))
+				if (!PaintUtils.validPixel(pixels, targetColor, x, y) || visited[x][y])
 					return false;
 			}
 

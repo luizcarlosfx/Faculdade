@@ -116,6 +116,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.mysql.jdbc.Buffer;
+
 public class ImageUtils
 {
 	public static BufferedImage getImage(String path)
@@ -136,7 +138,11 @@ public class ImageUtils
 	{
 		try
 		{
-			ImageIO.write(image, "jpg", file);
+			String path = file.getPath();
+			
+			String extension = path.substring(path.length() - 3);
+			
+			ImageIO.write(image, "png", file);
 		}
 		catch (IOException e)
 		{
